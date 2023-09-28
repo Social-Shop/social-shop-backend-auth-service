@@ -1,0 +1,34 @@
+version: "3.1"
+services:
+  auth-database:
+    image: mysql:latest
+    restart: on-failure
+    networks:
+      - auth-service
+
+  auth-service:
+    build:
+      context: ./
+    depends_on:
+      - auth-database
+    networks:
+      - auth-service
+      - social-shop
+
+networks:
+  auth-service:
+    driver: bridge
+  social-shop:
+      driver: bridge
+
+volumes:
+  mysql:
+
+
+
+
+
+
+
+
+

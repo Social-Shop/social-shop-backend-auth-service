@@ -8,6 +8,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -18,9 +19,9 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Component
-@RequiredArgsConstructor
+@Configuration
 public class JwtUtilImpl implements JwtUtil {
-    @Value("${JWT_SIGNING_KEY}")
+    @Value("${JWT_SIGNING_KEY:signingKey}")
     private String signingKey;
 
     @Override

@@ -33,7 +33,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 throw new BadCredentialsException("Token is not valid");
             }
             String jwtToken = authHeader.substring(7).trim();
-            //TODO : check exist in redis
             if (StringUtils.isNotEmpty(jwtToken) && redisTemplate.opsForValue().get(jwtToken) != null) {
                 String username = jwtUtil.extractUsername(jwtToken);
                 var user = userDetailsService.loadUserByUsername(username);

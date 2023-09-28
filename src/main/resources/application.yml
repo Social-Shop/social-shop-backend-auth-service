@@ -1,0 +1,33 @@
+server:
+  port: 8081
+  servlet:
+    context-path: /api
+spring:
+  application:
+    name: auth-service
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: ${MYSQL_PASSWORD:root}
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/auth
+  jpa:
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: update
+
+  output:
+    ansi:
+      enabled: ALWAYS
+  cache:
+    type: REDIS
+    redis:
+      time-to-live: 20000
+eureka:
+  client:
+    service-url:
+      default-zone: http://${EUREKA_HOST:localhost}:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true

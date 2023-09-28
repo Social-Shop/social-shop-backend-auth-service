@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +22,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
+    private final RedisTemplate<String, Object> redisTemplate;
     private final JwtUtil jwtUtil;
 
     @Override
@@ -32,7 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
             String jwtToken = authHeader.substring(7).trim();
             //TODO : check exist in redis
-            if (StringUtils.isNotEmpty(jwtToken)) {
+            if (StringUtils.isNotEmpty(jwtToken) && redisTemplate.opsForValue().get(jwtToken) != null) {
                 String username = jwtUtil.extractUsername(jwtToken);
                 var user = userDetailsService.loadUserByUsername(username);
                 if (jwtUtil.isValidToken(jwtToken, user)) {

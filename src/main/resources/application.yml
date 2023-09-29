@@ -9,15 +9,14 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: ${MYSQL_PASSWORD:nxhung}
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/auth
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/auth?allowPublicKeyRetrieval=true&useSSL=false
   jpa:
     show-sql: true
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-      ddl-auto: update
-
+      ddl-auto: validate
   output:
     ansi:
       enabled: ALWAYS
@@ -25,9 +24,20 @@ spring:
     type: REDIS
     redis:
       time-to-live: 20000
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    schemas:
+      - auth
+
 eureka:
   client:
     service-url:
       default-zone: http://${EUREKA_HOST:localhost}:8761/eureka
     register-with-eureka: true
     fetch-registry: true
+
+logging:
+  level:
+    root: info

@@ -19,6 +19,10 @@ CREATE TABLE IF NOT EXISTS roles
     updatedAt DATETIME(6)
 );
 
+INSERT IGNORE INTO roles (name,createdAt,updatedAt) values
+("USER",NOW(),NOW()),
+("ADMIN",NOW(),NOW());
+
 CREATE TABLE IF NOT EXISTS user_roles (
     userId BIGINT NOT NULL,
     roleId BIGINT NOT NULL,
@@ -29,15 +33,20 @@ CREATE TABLE IF NOT EXISTS user_roles (
 
 
 
+
+
+
 CREATE TABLE IF NOT EXISTS sessions
 (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    userId BIGINT FOREIGN KEY REFERENCES users(id),
+    userId BIGINT NOT NULL,
     refreshToken VARCHAR(255) NOT NULL,
-    isBlackList BOOLEAN false,
+    isBlackList BOOLEAN DEFAULT false,
     createdAt DATETIME(6),
-    expiredAt DATETIME(6)
+    expiredAt DATETIME(6),
+    FOREIGN KEY (userId) REFERENCES users(id)
 );
+
 
 
 

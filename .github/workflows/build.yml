@@ -45,6 +45,6 @@ jobs:
       with:  
         context: .
         push: true
-        tags: hidenxtt2001/social-shop-eureka-service:latest
+        tags: hidenxtt2001/social-shop-auth-service:latest
       
         

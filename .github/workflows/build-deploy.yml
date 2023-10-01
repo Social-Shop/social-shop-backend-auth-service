@@ -56,4 +56,19 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            REPO_URL="https://github.com/Social-Shop/social-shop-backend-deploy.git"
+            LOCAL_DIR="repos/social-shop-backend-deploy"
+            if [ ! -d "$LOCAL_DIR" ]; 
+            then
+              git clone "$REPO_URL" "$LOCAL_DIR" && echo "Repository cloned successfully.";
+            else
+              echo "Repository already exists locally"
+            fi
+            # Docker compose
+            cd "$LOCAL_DIR"
+            git checkout -- .
+            git pull && echo "Git pull finish";
+            chmod u+x scripts/deploy.sh;
+            scripts/deploy.sh
             

@@ -11,7 +11,9 @@ import org.springframework.data.redis.core.RedisTemplate;
 public class RedisConfiguration {
     @Bean
     public LettuceConnectionFactory lettuceConnectionFactory() {
-        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(System.getenv("REDIS_URL"), Integer.parseInt(System.getenv("REDIS_PORT")));
+        String redisUrl = System.getenv("REDIS_URL");
+        int redisPort = Integer.parseInt(System.getenv("REDIS_PORT"));
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(redisUrl,redisPort );
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
 

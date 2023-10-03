@@ -32,6 +32,4 @@ public class TokenController {
         var res = BaseResponse.<ValidateTokenResponse>builder().data(validated).statusCode(HttpStatus.OK).build();
         return res.toResponseEntity();
     }
-
-
 }

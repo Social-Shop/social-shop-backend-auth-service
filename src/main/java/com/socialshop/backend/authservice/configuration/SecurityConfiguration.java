@@ -61,9 +61,11 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(requestMatcherRegistry ->
                         requestMatcherRegistry
                                 .requestMatchers(
+                                        "v**/token/validateToken"
+                                ).authenticated()
+                                .requestMatchers(
                                         "v1/auth/**",
                                         "v1/token/**"
-
                                 ).permitAll()
                                 .anyRequest().authenticated()
 

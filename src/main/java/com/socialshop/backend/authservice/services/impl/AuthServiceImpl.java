@@ -11,17 +11,17 @@ import com.socialshop.backend.authservice.repositiories.RoleRepository;
 import com.socialshop.backend.authservice.repositiories.SessionRepository;
 import com.socialshop.backend.authservice.repositiories.UserRepository;
 import com.socialshop.backend.authservice.services.AuthService;
-import com.socialshop.backend.authservice.services.dtos.LoginRequest;
-import com.socialshop.backend.authservice.services.dtos.RefreshTokenRequest;
-import com.socialshop.backend.authservice.services.dtos.RegisterRequest;
-import com.socialshop.backend.authservice.services.dtos.SessionAuthResponse;
+import com.socialshop.backend.authservice.services.dtos.*;
 import com.socialshop.backend.authservice.services.mapper.UserMapper;
 import com.socialshop.backend.authservice.services.model.SessionEntity;
 import com.socialshop.backend.authservice.services.model.UserEntity;
 import com.socialshop.backend.authservice.utils.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -71,8 +71,8 @@ public class AuthServiceImpl implements AuthService {
                 .refreshToken(res.getRefreshToken())
                 .expiredAt(Instant.ofEpochMilli(System.currentTimeMillis() + JwtConstant.refreshLifeTime))
                 .build();
-        sessionRepository.save(session);
-        redisTemplate.opsForValue().set(res.getAccessToken(), Instant.ofEpochMilli(System.currentTimeMillis() + JwtConstant.accessLifeTime));
+        session = sessionRepository.save(session);
+        redisTemplate.opsForValue().set(res.getAccessToken(), session.getId(), Duration.ofMillis(System.currentTimeMillis() + JwtConstant.accessLifeTime));
         return res;
     }
 
@@ -90,9 +90,24 @@ public class AuthServiceImpl implements AuthService {
                 .refreshToken(res.getRefreshToken())
                 .expiredAt(expiredTime)
                 .build();
-        sessionRepository.save(session);
-        redisTemplate.opsForValue().set(res.getAccessToken(), Instant.ofEpochMilli(System.currentTimeMillis() + JwtConstant.accessLifeTime));
+        session = sessionRepository.save(session);
+        redisTemplate.opsForValue().set(res.getAccessToken(), session.getId(), Duration.ofMillis(System.currentTimeMillis() + JwtConstant.accessLifeTime));
         return res;
+    }
+
+    @Override
+    public void logout()  {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String token = auth.getCredentials().toString();
+        Long sessionId = (Long) redisTemplate.opsForValue().get(token);
+        assert sessionId != null;
+        var sessionFind = sessionRepository.findById(sessionId);
+        if (sessionFind.isPresent()) {
+            var session = sessionFind.get();
+            session.setIsBlackList(true);
+            sessionRepository.save(session);
+        }
+        redisTemplate.opsForValue().getAndDelete(token);
     }
 
 

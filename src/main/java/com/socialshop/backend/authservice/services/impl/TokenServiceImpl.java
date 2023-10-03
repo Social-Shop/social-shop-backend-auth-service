@@ -9,11 +9,14 @@ import com.socialshop.backend.authservice.repositiories.UserRepository;
 import com.socialshop.backend.authservice.services.TokenService;
 import com.socialshop.backend.authservice.services.dtos.RefreshTokenRequest;
 import com.socialshop.backend.authservice.services.dtos.SessionAuthResponse;
+import com.socialshop.backend.authservice.services.dtos.ValidateTokenResponse;
 import com.socialshop.backend.authservice.services.mapper.UserMapper;
 import com.socialshop.backend.authservice.utils.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +50,20 @@ public class TokenServiceImpl implements TokenService {
         String accessToken = generateAccessToken(userFind.get());
         redisTemplate.opsForValue().set(accessToken, Instant.ofEpochMilli(System.currentTimeMillis() + JwtConstant.accessLifeTime));
         return SessionAuthResponse.builder().refreshToken(request.getRefreshToken()).accessToken(accessToken).build();
+    }
+
+    @Override
+    public ValidateTokenResponse validateToken() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getPrincipal().toString();
+        String accessToken = auth.getCredentials().toString();
+        List<String> authorizes = auth.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+
+        return ValidateTokenResponse.builder()
+                .username(username)
+                .accessToken(accessToken)
+                .authorizes(authorizes)
+                .build();
     }
 
     private String generateAccessToken(UserDetails userDetails) {

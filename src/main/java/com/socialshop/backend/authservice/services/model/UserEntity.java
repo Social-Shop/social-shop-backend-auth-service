@@ -40,7 +40,7 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @LastModifiedDate
     private Instant updatedAt;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "userId"),

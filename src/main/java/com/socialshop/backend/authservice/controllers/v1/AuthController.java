@@ -34,4 +34,11 @@ public class AuthController {
         var res = BaseResponse.<SessionAuthResponse>builder().data(session).statusCode(HttpStatus.CREATED).build();
         return res.toResponseEntity();
     }
+
+    @PostMapping("/logout")
+    protected ResponseEntity<BaseResponse<Object>> logout() {
+        authService.logout();
+        var res = BaseResponse.builder().statusCode(HttpStatus.OK).build();
+        return res.toResponseEntity();
+    }
 }

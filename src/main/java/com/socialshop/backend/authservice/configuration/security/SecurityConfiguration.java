@@ -1,12 +1,11 @@
-package com.socialshop.backend.authservice.configuration;
+package com.socialshop.backend.authservice.configuration.security;
 
-import com.socialshop.backend.authservice.configuration.filter.JwtAccessDeniedHandler;
-import com.socialshop.backend.authservice.configuration.filter.JwtAuthenticationEntryPoint;
-import com.socialshop.backend.authservice.configuration.filter.JwtAuthenticationFilter;
+import com.socialshop.backend.authservice.configuration.security.filter.JwtAccessDeniedHandler;
+import com.socialshop.backend.authservice.configuration.security.filter.JwtAuthenticationEntryPoint;
+import com.socialshop.backend.authservice.configuration.security.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -42,6 +41,7 @@ public class SecurityConfiguration {
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {

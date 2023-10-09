@@ -4,8 +4,12 @@ import com.socialshop.backend.authservice.constants.exception.BadRequestExceptio
 import com.socialshop.backend.authservice.services.dtos.*;
 
 public interface AuthService {
-    SessionAuthResponse register(RegisterRequest request) throws BadRequestException;
+    RegisterSessionAuthResponse register(RegisterRequest request) throws BadRequestException;
+
+    SessionAuthResponse validateRegisterEmailOtp(RegisterValidateTokenAuthRequest request) throws BadRequestException;
+
     SessionAuthResponse login(LoginRequest request) throws BadRequestException;
+
     void logout();
 
 }

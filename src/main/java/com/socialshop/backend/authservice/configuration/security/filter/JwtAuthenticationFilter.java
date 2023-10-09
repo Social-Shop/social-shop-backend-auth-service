@@ -1,4 +1,4 @@
-package com.socialshop.backend.authservice.configuration.filter;
+package com.socialshop.backend.authservice.configuration.security.filter;
 
 import com.socialshop.backend.authservice.utils.jwt.JwtUtil;
 import jakarta.servlet.FilterChain;

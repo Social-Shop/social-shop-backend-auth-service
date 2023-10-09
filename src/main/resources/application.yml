@@ -7,9 +7,9 @@ spring:
     name: auth-service
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: ${MYSQL_PASSWORD:root}
-    url: ${MYSQL_HOST:jdbc:mysql://localhost:3306/auth?allowPublicKeyRetrieval=true&useSSL=false}
+    username: ${DATASOURCE_USERNAME_AUTH:root}
+    password: ${DATASOURCE_PASSWORD_AUTH:root}
+    url: jdbc:mysql://localhost:3306/auth?allowPublicKeyRetrieval=true&useSSL=false
   jpa:
     show-sql: true
     database-platform: org.hibernate.dialect.MySQLDialect
@@ -25,11 +25,22 @@ spring:
     redis:
       time-to-live: 20000
 
+  kafka:
+    bootstrap-servers: localhost:19091
+
   flyway:
     enabled: true
     baseline-on-migrate: true
     schemas:
       - auth
+
+
+redis:
+  host: ${REDIS_URL:localhost}
+  port: ${REDIS_PORT:6379}
+
+jwt:
+  signing-key: ${JWT_SIGNING_KEY:01f63c787b72997c1622d3b1c74f7d857d3f1df1f2926cc5da8e4a6dbb10779e}
 
 eureka:
   client:

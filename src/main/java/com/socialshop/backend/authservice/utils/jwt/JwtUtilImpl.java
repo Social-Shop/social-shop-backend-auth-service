@@ -21,7 +21,7 @@ import java.util.function.Function;
 @Component
 @Configuration
 public class JwtUtilImpl implements JwtUtil {
-    @Value("${JWT_SIGNING_KEY:signingKey}")
+    @Value("${jwt.signing-key}")
     private String signingKey;
 
     @Override

@@ -1,5 +1,6 @@
 package com.socialshop.backend.authservice.configuration;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -9,11 +10,15 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 @Configuration
 public class RedisConfiguration {
+    @Value("${redis.host}")
+    private String redisHost;
+
+    @Value("${redis.port}")
+    private Integer redisPort;
+
     @Bean
     public LettuceConnectionFactory lettuceConnectionFactory() {
-        String redisUrl = System.getenv("REDIS_URL");
-        int redisPort = Integer.parseInt(System.getenv("REDIS_PORT"));
-        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(redisUrl,redisPort );
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(redisHost, redisPort);
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
 
